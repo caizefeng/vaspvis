@@ -5,7 +5,7 @@ with open("./README.md", "r") as fh:
 
 setup(
     name="vaspvis",
-    version="1.2.17",
+    version="1.2.18",
     description="A highly flexible and customizable library for visualizing electronic structure data from VASP calculations",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -22,8 +22,8 @@ setup(
         "fastdtw",
         "scikit-learn",
     ],
-    url="https://github.com/DerekDardzinski/vaspvis",
+    url="https://github.com/caizefeng/vaspvis",
     author="Derek Dardzinski",
-    author_email="dardzinski.derek@gmail.com",
+    maintainer='Zefeng Cai',
     license="MIT",
 )
