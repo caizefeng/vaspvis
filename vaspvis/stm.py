@@ -1,3 +1,4 @@
+import vaspvis.warnings_config
 from pymatgen.io.vasp.outputs import Chgcar
 from pymatgen.io.vasp.inputs import Poscar
 from pymatgen.core.periodic_table import Element

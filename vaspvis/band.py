@@ -1,3 +1,4 @@
+import vaspvis.warnings_config
 from pymatgen.electronic_structure.core import Spin, Orbital
 from pymatgen.io.vasp.outputs import BSVasprun, Eigenval
 from pymatgen.io.vasp.inputs import Kpoints, Poscar, Incar

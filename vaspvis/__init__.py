@@ -1,3 +1,4 @@
+import vaspvis.warnings_config
 from vaspvis.band import Band
 from vaspvis.dos import Dos
 from vaspvis.stm import STM

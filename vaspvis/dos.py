@@ -1,3 +1,4 @@
+import vaspvis.warnings_config
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator, LogLocator
 from pymatgen.io.vasp.outputs import Vasprun
