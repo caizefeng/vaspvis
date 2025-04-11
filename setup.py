@@ -12,7 +12,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "pyprocar==5.6.6",
-        "scipy==1.10.1",
+        "scipy",
         "pymatgen",
         "matplotlib",
         "numpy",

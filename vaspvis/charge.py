@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 from multiprocessing import Pool
 from scipy.interpolate import CubicSpline
-from scipy.integrate import trapz
+from scipy.integrate import trapezoid
 import numpy as np
 import time
 import os
@@ -127,8 +127,8 @@ class Charge:
         sub_chg = int_cs(sub_max) - film_cs(sub_max) - sub_cs(sub_max)
         film_chg = int_cs(film_min) - film_cs(film_min) - sub_cs(film_min)
 
-        sub_charge = trapz(y=sub_to_mid_data, x=sub_to_mid_z)
-        film_charge = trapz(y=mid_to_film_data, x=mid_to_film_z)
+        sub_charge = trapezoid(y=sub_to_mid_data, x=sub_to_mid_z)
+        film_charge = trapezoid(y=mid_to_film_data, x=mid_to_film_z)
 
         all_z = np.linspace(int_min, int_max, 1001)
         all_data = int_cs(all_z) - film_cs(all_z) - sub_cs(all_z)
