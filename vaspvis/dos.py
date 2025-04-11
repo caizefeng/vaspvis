@@ -20,6 +20,8 @@ import os
 
 import matplotlib as mpl
 
+from vaspvis.dos_helpers import integrate_dos_fine
+
 mpl.rcParams.update(mpl.rcParamsDefault)
 
 
@@ -1252,6 +1254,8 @@ class Dos:
         color="black",
         erange=[-6, 6],
         log_scale=False,
+        SP_window=None, #MJ
+        scale_factor=1, #MJ
     ):
         """
         This function plots the total density of states
@@ -1265,7 +1269,7 @@ class Dos:
             sigma (float): Standard deviation for gaussian filter
             energyaxis (str): Determines the axis to plot the energy on ('x' or 'y')
             color (str): Color of line
-            erange (list): Energy range for the DOS plot ([lower bound, upper bound])
+            erange (list | tuple): Energy range for the DOS plot ([lower bound, upper bound])
         """
 
         tdos_array = self.tdos_array
@@ -1279,6 +1283,13 @@ class Dos:
             tdensity = self._smear(tdos_array[:, 1], sigma=sigma)
         else:
             tdensity = tdos_array[:, 1]
+
+        if SP_window is not None:
+            dos_fermi_integral = integrate_dos_fine(
+                                            tdos_array,
+                                            E_f=0,  # already shifted
+                                            delta=SP_window,
+                                            )
 
         if log_scale:
             tdensity = np.log10(tdensity)
@@ -1298,7 +1309,7 @@ class Dos:
 
         if energyaxis == "y":
             ax.plot(
-                tdensity,
+                scale_factor*tdensity,
                 tdos_array[:, 0],
                 linewidth=linewidth,
                 color=color,
@@ -1308,7 +1319,7 @@ class Dos:
             if fill:
                 ax.fill_betweenx(
                     tdos_array[:, 0],
-                    tdensity,
+                    scale_factor*tdensity,
                     0,
                     alpha=alpha,
                     color=color,
@@ -1331,6 +1342,10 @@ class Dos:
                     color=color,
                     alpha=alpha,
                 )
+
+        if SP_window is not None:
+            return dos_fermi_integral
+
 
     def plot_ldos(
         self,
@@ -2067,7 +2082,7 @@ class Dos:
                 {'element index': <color>, 'element index': <color>, ...}
             legend (bool): Determines whether to draw the legend or not
             total (bool): Determines wheth to draw the total density of states or not
-            erange (list): Energy range for the DOS plot ([lower bound, upper bound])
+            erange (list | tuple): Energy range for the DOS plot ([lower bound, upper bound])
         """
         element_symbols = list(element_spd_dict.keys())
         orbital_symbols = list(element_spd_dict.values())
