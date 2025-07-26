@@ -141,12 +141,15 @@ class BandGap():
             the fermi level. method=1 gets the band gap based on the average energy
             of each band.
     """
-    def __init__(self, folder, spin='both', soc_axis=None, method=0) -> None:
+    def __init__(self, folder, spin='both', soc_axis=None, method=0, is_gw=False) -> None:
         self.folder = folder
         self.method = method
         self.spin = spin
         self.soc_axis = soc_axis
+        self.is_gw = is_gw
         self.eigenval = Eigenval(os.path.join(folder, 'EIGENVAL'))
+        # For the purpose of band gap determination, an accurate E-fermi from the full-BZ calculation is not necessary.
+        # Therefore, we simply use the value from the band calculation OUTCAR.
         self.efermi = float(os.popen(f'grep E-fermi {os.path.join(folder, "OUTCAR")}').read().split()[2])
 
         self.incar = Incar.from_file(
@@ -263,6 +266,42 @@ class BandGap():
                 eigenvalues = band_data[:,:,0]
                 kpoints = band_data[0,:,2:]
                 eigenvalues_bg = band_data[:,:,[0,1]]
+
+        elif self.is_gw:
+            win = open(os.path.join(self.folder, 'wannier90.win'), 'r+').readlines()
+            nbands: int = 0
+            for line in win:
+                split_line = line.split('\n')[:-1][0]
+                if 'num_wann' in split_line:
+                    nbands = int(split_line.split('=')[-1].strip())
+
+            if len(self.eigenval.eigenvalues.keys()) > 1:
+                data_up = open(os.path.join(self.folder, 'wannier90.1_band.dat'), 'r+').readlines()
+                data_dn = open(os.path.join(self.folder, 'wannier90.2_band.dat'), 'r+').readlines()
+                concatenated_k_e_up = []
+                concatenated_k_e_down = []
+                clean_wannier_data(data_up, concatenated_k_e_up)
+                clean_wannier_data(data_dn, concatenated_k_e_down)
+                eigenvalues_up = np.array(concatenated_k_e_up).reshape((nbands, -1, 2))[:, :, 1] - self.efermi
+                eigenvalues_down = np.array(concatenated_k_e_down).reshape((nbands, -1, 2))[:, :, 1] - self.efermi
+
+                if self.spin == 'both':
+                    eigenvalues_bg = np.vstack([eigenvalues_up, eigenvalues_down])
+                elif self.spin == 'up':
+                    eigenvalues_bg = eigenvalues_up
+                elif self.spin == 'down':
+                    eigenvalues_bg = eigenvalues_down
+
+            else:
+                data = open(os.path.join(self.folder, 'wannier90_band.dat'), 'r+').readlines()
+                concatenated_k_e = []
+                clean_wannier_data(data, concatenated_k_e)
+                eigenvalues = np.array(concatenated_k_e).reshape((nbands, -1, 2))[:, :, 1] - self.efermi
+
+                eigenvalues_bg = eigenvalues
+
+            return eigenvalues_bg
+
         else:
             if len(self.eigenval.eigenvalues.keys()) > 1:
                 eigenvalues_up = np.transpose(self.eigenval.eigenvalues[Spin.up], axes=(1,0,2))
@@ -1065,6 +1104,14 @@ def compare_dos_to_bulk(
         return area_diff
 
 
+def clean_wannier_data(raw_data, concatenated_k_e):
+    for line in raw_data:
+        split_line = line.split('\n')[:-1][0].split(' ')
+        filter_line = list(filter(None, split_line))
+        if not filter_line:
+            continue
+        else:
+            concatenated_k_e.append([float(x) for x in filter_line])
 
 
 if __name__ == "__main__":
