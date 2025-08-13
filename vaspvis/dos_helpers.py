@@ -2,9 +2,9 @@ import vaspvis.warnings_config
 import numpy as np
 
 
-def integrate_dos_fine(tdos_array, E_f, delta, num_points=2001):
+def integrate_dos_fine(tdos_array, E_f, delta, valence_only=False, num_points=2001, interpolate=True):
     """
-    Interpolate DOS onto a finer grid and integrate it in the window [E_f - delta, E_f + delta].
+    Interpolate DOS onto a finer grid and integrate it in the window.
 
     Parameters
     ----------
@@ -15,9 +15,16 @@ def integrate_dos_fine(tdos_array, E_f, delta, num_points=2001):
         Fermi energy (eV).
     delta : float
         Half-width of the integration window around E_f (eV).
+    valence_only : bool, optional
+        If True, only integrate from (E_f - delta) to the Fermi level (E_f).
+        If False, integrate from (E_f - delta) to (E_f + delta).
+        Default is False.
     num_points : int, optional
         Number of points in the finer energy grid for interpolation.
-        Default is 2001.
+        Default is 2001. Won't be used if `interpolate` is False.
+    interpolate : bool, optional
+        If True, interpolate the DOS onto a finer grid before integration.
+        If False, use the original DOS data directly.
 
     Returns
     -------
@@ -35,7 +42,10 @@ def integrate_dos_fine(tdos_array, E_f, delta, num_points=2001):
 
     # Define the exact boundaries
     E_min_window = E_f - delta
-    E_max_window = E_f + delta
+    if valence_only:
+        E_max_window = E_f  # For valence-only, we only integrate up to the Fermi level
+    else:
+        E_max_window = E_f + delta
 
     # Safety check: ensure the chosen window is within the overall data range
     E_min_data, E_max_data = energies[0], energies[-1]
@@ -49,18 +59,27 @@ def integrate_dos_fine(tdos_array, E_f, delta, num_points=2001):
     E_fine_min = max(E_min_data, E_min_window)
     E_fine_max = min(E_max_data, E_max_window)
 
-    # Create a finer energy grid (linear spacing)
-    E_fine = np.linspace(E_fine_min, E_fine_max, num=num_points)
+    if interpolate:
+        # Create a finer energy grid (linear spacing)
+        E_fine = np.linspace(E_fine_min, E_fine_max, num=num_points)
 
-    # Interpolate the DOS onto this finer grid
-    dos_fine = np.interp(E_fine, energies, dos)
+        # Interpolate the DOS onto this finer grid
+        dos_fine = np.interp(E_fine, energies, dos)
 
-    # Now, mask exactly within [E_f - delta, E_f + delta]
-    mask = (E_fine >= E_min_window) & (E_fine <= E_max_window)
-    E_in = E_fine[mask]
-    dos_in = dos_fine[mask]
+        # Now, mask exactly within [E_f - delta, E_f + delta]
+        mask = (E_fine >= E_min_window) & (E_fine <= E_max_window)
+        E_in = E_fine[mask]
+        dos_in = dos_fine[mask]
 
-    # Integrate using the trapezoidal rule
-    integral_value = np.trapz(dos_in, x=E_in)
+        # Integrate using the trapezoidal rule
+        integral_value = np.trapz(dos_in, x=E_in)
+    else:
+        # If not interpolating, we directly use the original data
+        mask = (energies >= E_min_window) & (energies <= E_max_window)
+        E_in = energies[mask]
+        dos_in = dos[mask]
+
+        # Integrate using the trapezoidal rule
+        integral_value = np.trapz(dos_in, x=E_in)
 
     return integral_value

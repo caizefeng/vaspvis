@@ -1254,8 +1254,9 @@ class Dos:
         color="black",
         erange=[-6, 6],
         log_scale=False,
-        SP_window=None, #MJ
-        scale_factor=1, #MJ
+        SP_window=None,
+        occupancy_window=None,
+        scale_factor=1,
     ):
         """
         This function plots the total density of states
@@ -1270,6 +1271,10 @@ class Dos:
             energyaxis (str): Determines the axis to plot the energy on ('x' or 'y')
             color (str): Color of line
             erange (list | tuple): Energy range for the DOS plot ([lower bound, upper bound])
+            log_scale (bool): Determines whether to use a logarithmic scale
+            SP_window (float): Spin polarization integration window
+            occupancy_window (float): Occupancy integration window
+            scale_factor (float): Scale factor for the density of states
         """
 
         tdos_array = self.tdos_array
@@ -1285,11 +1290,12 @@ class Dos:
             tdensity = tdos_array[:, 1]
 
         if SP_window is not None:
-            dos_fermi_integral = integrate_dos_fine(
-                                            tdos_array,
-                                            E_f=0,  # already shifted
-                                            delta=SP_window,
-                                            )
+            dos_fermi_integral = integrate_dos_fine(tdos_array, E_f=0, delta=SP_window, valence_only=False,
+                                                    interpolate=True)
+
+        if occupancy_window is not None:
+            dos_fermi_integral_under = integrate_dos_fine(tdos_array, E_f=0, delta=occupancy_window, valence_only=True,
+                                                          interpolate=False)
 
         if log_scale:
             tdensity = np.log10(tdensity)
@@ -1345,6 +1351,8 @@ class Dos:
 
         if SP_window is not None:
             return dos_fermi_integral
+        if occupancy_window is not None:
+            return dos_fermi_integral_under
 
 
     def plot_ldos(
