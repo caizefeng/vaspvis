@@ -23,6 +23,7 @@ def plot_band_dos_and_inset(
         element_spd_dict_inset=None,
         color_list_inset=None,
         wannier_suffix="-bands",
+        sp_scale_factor=1.2,
         fill=True,
         alpha=0.3,
         linewidth=1.25,
@@ -59,9 +60,10 @@ def plot_band_dos_and_inset(
         element_spd_dict_inset (dict, optional): Element-SPD mapping for the inset plot.
         color_list_inset (list, optional): Colors for the inset plot.
         wannier_suffix (str, optional): Suffix for Wannier band files.
+        sp_scale_factor (float, optional): Scale factor for non-GW spin-resolved band plots.
         fill (bool, optional): Whether to fill the DOS plots.
         alpha (float, optional): Transparency for the DOS plots.
-        linewidth (float, optional): Line width for plots.
+        linewidth (float, optional): Line width for DOS plots.
         sigma (float, optional): Gaussian smearing for DOS.
         delta (float, optional): Spin polarization window.
         legend (bool, optional): Whether to show the legend.
@@ -140,14 +142,14 @@ def plot_band_dos_and_inset(
                 erange=erange,
                 sp_color="blue",
                 linewidth=0,
-                sp_scale_factor=1.2,
+                sp_scale_factor=sp_scale_factor,
             )
             band_down.plot_plain(
                 ax=ax1,
                 erange=erange,
                 sp_color="red",
                 linewidth=0,
-                sp_scale_factor=1.2,
+                sp_scale_factor=sp_scale_factor,
             )
 
         ax1.axhline(y=0, color='black', linestyle='--', linewidth=0.75)
