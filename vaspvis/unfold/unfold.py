@@ -63,7 +63,7 @@ def removeDuplicateKpoints(kpoints):
     return kpoints[np.r_[True, match]]
 
 
-def save2VaspKPOINTS(kpoints, output="KPOINTS"):
+def save2VaspKPOINTS(kpoints, output="KPOINTS", weight='1.0'):
     """
     save to VASP KPOINTS file
     """
@@ -75,7 +75,7 @@ def save2VaspKPOINTS(kpoints, output="KPOINTS"):
         vaspkpt.write("%d\n" % nkpts)
         vaspkpt.write("Rec\n")
         for ik in range(nkpts):
-            line = "  %12.8f %12.8f %12.8f 1.0\n" % (
+            line = f"  %12.8f %12.8f %12.8f {weight}\n" % (
                 kpoints[ik, 0],
                 kpoints[ik, 1],
                 kpoints[ik, 2],

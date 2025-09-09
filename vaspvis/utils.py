@@ -98,7 +98,7 @@ def convert_slab(bulk_path, slab_path, index, output='POSCAR_unfold', generate=T
 
     return M
 
-def generate_kpoints(M, high_symmetry_points, n, output='KPOINTS'):
+def generate_kpoints(M, high_symmetry_points, n, output='KPOINTS', weight='1.0'):
     """
     This function generates a KPOINTS file for a band unfolding calculation
 
@@ -108,6 +108,7 @@ def generate_kpoints(M, high_symmetry_points, n, output='KPOINTS'):
             in the band structure path.
         n (int): Numbering of segments between each point
         output (str): File name of the KPOINTS file
+        weight (str): Weight of each k-point in the KPOINTS file
 
     Returns:
         KPOINTS file
@@ -119,7 +120,7 @@ def generate_kpoints(M, high_symmetry_points, n, output='KPOINTS'):
         K_in_sup.append(kg)
     reducedK = removeDuplicateKpoints(K_in_sup)
 
-    save2VaspKPOINTS(reducedK, output)
+    save2VaspKPOINTS(reducedK, output, weight=weight)
 
 
 class BandGap():
