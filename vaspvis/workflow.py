@@ -1,4 +1,3 @@
-import vaspvis.warnings_config
 import os
 
 import matplotlib.lines as mlines
@@ -7,7 +6,7 @@ import numpy as np
 from matplotlib.ticker import MaxNLocator
 
 from vaspvis import Band, Dos
-from vaspvis.band_helpers import clean_data_GW, compare_signs
+from vaspvis.band_helpers import clean_data_GW, compare_signs, plot_w90_orbital_projected_spin_split_N
 from vaspvis.band_helpers import get_magmoment
 from vaspvis.standard import _figure_setup_band_dos
 
@@ -99,7 +98,7 @@ def plot_band_dos_and_inset(
 
         # === Plot Band Structure + DOS === #
         fig_main, ax_main = plt.subplots(nrows=1, ncols=2, sharey=True, figsize=figsize_main, dpi=400,
-                               gridspec_kw={'width_ratios': [7, 3]})
+                                         gridspec_kw={'width_ratios': [7, 3]})
         ax1, ax2 = _figure_setup_band_dos(ax=ax_main, fontsize=fontsize, ylim=erange)
 
         # Band plot
@@ -114,7 +113,7 @@ def plot_band_dos_and_inset(
             for band in band_data:
                 ax1.scatter(band[:, 0], band[:, 1] - efermi,
                             c=compare_signs(band[:, 2], 0),
-                            marker='o', s=0.5,
+                            marker='o', s=sp_scale_factor/2.4,
                             cmap=plt.cm.bwr_r  # Red = low, White = 0, Blue = high
                             )
 
@@ -187,7 +186,6 @@ def plot_band_dos_and_inset(
         fig_main.savefig(f"{output_folder}/band_dos_{data_label}_spd.png", dpi=400, transparent=True)
         plt.show()
 
-
         # === Plot Inset-Style DOS Only === #
         plt.rcParams.update({'font.size': 11})
         fig_dos, ax_dos = plt.subplots(figsize=dos_figsize, dpi=440)
@@ -209,10 +207,11 @@ def plot_band_dos_and_inset(
         ax_dos.invert_xaxis()
 
         pos_dos_panel = ax_dos.get_position()
-        ax_dos.set_position([pos_dos_panel.x0+0.25, pos_dos_panel.y0, pos_dos_panel.width*0.7, pos_dos_panel.height])
+        ax_dos.set_position(
+            [pos_dos_panel.x0 + 0.25, pos_dos_panel.y0, pos_dos_panel.width * 0.7, pos_dos_panel.height])
 
         fig_dos.savefig(f"{output_folder}/dos_panel_{data_label}_spd.png", dpi=400, transparent=True,
-                    # bbox_inches='tight', pad_inches=0.1
+                        # bbox_inches='tight', pad_inches=0.1
                         )
         plt.show()
 
@@ -235,6 +234,134 @@ def plot_band_dos_and_inset(
                             sigma=sigma,
                             delta=delta,
                             dos_folder=dos_folder)
+
+
+def plot_band_spd_both_spin(
+        compare_data_array,
+        compare_data_label_array,
+        is_gw_list,
+        band_folder_list,
+        element_spd_dict_main,
+        color_list_main,
+        output_folder,
+        wannier_suffix="-bands",
+        legend=False,
+        erange=(-4, 4),
+        fontsize=14,
+        figsize_main=(11, 4),
+        scale_factor=1.0,
+):
+    os.makedirs(output_folder, exist_ok=True)
+
+    dos_folder = "dos"
+
+    for data_path, data_label, is_gw, band_folder in zip(
+            compare_data_array, compare_data_label_array, is_gw_list, band_folder_list):
+        print(f"Processing: {data_label} | Path: {data_path}")
+
+        band_path = f"{data_path}/{band_folder}"
+        dos_path = f"{data_path}/{dos_folder}"
+
+        # === Plot Band Structure + DOS === #
+        fig_main, ax_main = plt.subplots(nrows=1, ncols=2, figsize=figsize_main, dpi=400,
+                                         gridspec_kw={'width_ratios': [7, 7]})
+
+        ax1 = ax_main[0]
+        ax2 = ax_main[1]
+        ax1.tick_params(labelsize=fontsize)
+        ax1.tick_params(axis="x", length=0)
+        ax1.set_ylabel("$E - E_{F}$ $(eV)$", fontsize=fontsize)
+        ax1.set_xlabel("Wave Vector", fontsize=fontsize)
+        ax1.set_ylim(erange[0], erange[1])
+        ax2.tick_params(labelsize=fontsize)
+        ax2.tick_params(axis="x", length=0)
+        ax2.set_xlabel("Wave Vector", fontsize=fontsize)
+        ax2.set_ylim(erange[0], erange[1])
+        ax2.yaxis.tick_right()
+        ax2.yaxis.set_label_position("right")
+
+        # Band plot
+        if is_gw:
+            # N orbitals inferred from len(color_list_main)
+            plot_w90_orbital_projected_spin_split_N(
+                ax_up=ax1,
+                ax_dn=ax2,
+                data_path=data_path,
+                band_folder=band_folder,
+                dos_folder=dos_folder,
+                colors=color_list_main,  # length N
+                wannier_suffix=wannier_suffix,  # "-bands"
+                erange=erange,
+                base_color="0.80",
+                base_lw=0.0,
+                scale_factor=scale_factor,
+                display_order="all",
+                orbital_folders=None,  # auto-discover w90_o1..w90_oN
+            )
+
+        else:
+            band_up = Band(
+                folder=band_path,
+                projected=True,
+                spin="up",
+                soc_axis='z',
+                efermi_folder=dos_path,
+            )
+            band_down = Band(
+                folder=band_path,
+                projected=True,
+                spin="down",
+                soc_axis='z',
+                efermi_folder=dos_path,
+            )
+
+            band_up.plot_element_spd(
+                ax=ax1,
+                erange=erange,
+                element_spd_dict=element_spd_dict_main,
+                linewidth=0,
+                color_list=color_list_main,
+                legend=legend,
+            )
+
+            band_down.plot_element_spd(
+                ax=ax2,
+                erange=erange,
+                element_spd_dict=element_spd_dict_main,
+                linewidth=0,
+                color_list=color_list_main,
+                legend=legend,
+            )
+
+        ax1.axhline(y=0, color='black', linestyle='--', linewidth=0.75)
+        ax2.axhline(y=0, color='black', linestyle='--', linewidth=0.75)
+
+        fig_main.subplots_adjust(wspace=0.1)
+
+        # Get original positions
+        pos_band_up = ax1.get_position()
+        pos_dos_down = ax2.get_position()
+
+        # Shift upwards by 0.02 (play with the value)
+        ax1.set_position([pos_band_up.x0, pos_band_up.y0 + 0.03, pos_band_up.width, pos_band_up.height])
+        ax2.set_position([pos_dos_down.x0, pos_dos_down.y0 + 0.03, pos_dos_down.width, pos_dos_down.height])
+
+        fig_main.savefig(f"{output_folder}/band_spd_{data_label}_both_spin.png", dpi=400, transparent=True)
+        plt.show()
+
+    # === Generate Legend === #
+    fig_legend, ax_legend = plt.subplots(figsize=(2.1, 2))
+    dots = []
+
+    for i, (k, v) in enumerate(element_spd_dict_main.items()):
+        dots.append(mlines.Line2D([], [], color=color_list_main[i], marker='o', linestyle='None', markersize=20,
+                                  label=f'{k}({v})'))
+
+    ax_legend.legend(handles=dots, loc='center', fontsize=22, facecolor='white', edgecolor='k')
+    ax_legend.axis('off')
+
+    fig_legend.savefig(f'{output_folder}/band_spd_legend.png', dpi=900, transparent=True)
+    plt.show()
 
 
 def fermi_spin_polarization(compare_data_array, dos_erange=(-8, 8), sigma=0.05, delta=0.0375, dos_folder="dos"):
@@ -302,3 +429,5 @@ def fermi_spin_polarization(compare_data_array, dos_erange=(-8, 8), sigma=0.05, 
     plt.close(dummy_fig)
 
     return spin_polarization_results
+
+
