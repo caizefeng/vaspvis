@@ -1289,13 +1289,20 @@ class Dos:
         else:
             tdensity = tdos_array[:, 1]
 
-        if SP_window is not None:
-            dos_fermi_integral = integrate_dos_fine(tdos_array, E_f=0, delta=SP_window, valence_only=False,
-                                                    interpolate=True)
+        if SP_window is not None or occupancy_window is not None:
+            tdos_array_for_int = tdos_array.copy()
+            tdos_array_for_int[:, 1] = tdensity
 
-        if occupancy_window is not None:
-            dos_fermi_integral_under = integrate_dos_fine(tdos_array, E_f=0, delta=occupancy_window, valence_only=True,
-                                                          interpolate=False)
+            window = SP_window if SP_window is not None else occupancy_window
+            valence_only = SP_window is None  # True only for occupancy_window
+
+            dos_fermi_integral = integrate_dos_fine(
+                tdos_array_for_int,
+                E_f=0,
+                delta=window,
+                valence_only=valence_only,
+                interpolate=True,
+            )
 
         if log_scale:
             tdensity = np.log10(tdensity)
