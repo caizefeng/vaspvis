@@ -22,9 +22,12 @@ jobs:
           venv/bin/pip install --upgrade pip
           venv/bin/pip install .
           venv/bin/pip check
-      - name: Import smoke test
-        run: venv/bin/python -c "import vaspvis.standard, vaspvis.utils, vaspvis.workflow; print('vaspvis imports fine')"
+      - name: Import smoke test (from outside the checkout, so the installed package is used)
+        run: |
+          cd "$RUNNER_TEMP"
+          "$GITHUB_WORKSPACE/venv/bin/python" -c "import vaspvis.standard, vaspvis.utils, vaspvis.workflow, vaspvis; print('vaspvis imports fine from', vaspvis.__file__)"
       - name: Unit tests against the installed package
         run: |
           venv/bin/pip install pytest
-          venv/bin/pytest -q tests
+          cd "$RUNNER_TEMP"
+          "$GITHUB_WORKSPACE/venv/bin/pytest" -q "$GITHUB_WORKSPACE/tests"
