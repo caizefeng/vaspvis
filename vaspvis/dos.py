@@ -2444,7 +2444,7 @@ class Dos:
                 im = ax.contourf(
                     energies,
                     atom_index,
-                    densities,
+                    np.transpose(densities),
                     cmap=cmap,
                     levels=levels,
                     norm=norm,
