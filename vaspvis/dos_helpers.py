@@ -1,6 +1,9 @@
 import vaspvis.warnings_config
 import numpy as np
 
+# NumPy 2.0 renamed np.trapz to np.trapezoid and later removed the old name.
+_trapezoid = getattr(np, "trapezoid", None) or np.trapz
+
 
 def integrate_dos_fine(tdos_array, E_f, delta, valence_only=False, num_points=2001, interpolate=True):
     """
@@ -72,7 +75,7 @@ def integrate_dos_fine(tdos_array, E_f, delta, valence_only=False, num_points=20
         dos_in = dos_fine[mask]
 
         # Integrate using the trapezoidal rule
-        integral_value = np.trapz(dos_in, x=E_in)
+        integral_value = _trapezoid(dos_in, x=E_in)
     else:
         # If not interpolating, we directly use the original data
         mask = (energies >= E_min_window) & (energies <= E_max_window)
@@ -80,6 +83,6 @@ def integrate_dos_fine(tdos_array, E_f, delta, valence_only=False, num_points=20
         dos_in = dos[mask]
 
         # Integrate using the trapezoidal rule
-        integral_value = np.trapz(dos_in, x=E_in)
+        integral_value = _trapezoid(dos_in, x=E_in)
 
     return integral_value

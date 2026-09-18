@@ -574,7 +574,7 @@ class vaspwfc(object):
         else:
             ngrid = np.array(ngrid, dtype=int)
             assert ngrid.shape == (3,)
-            assert np.alltrue(
+            assert np.all(
                 ngrid >= self._ngrid
             ), "Minium FT grid size: (%d, %d, %d)" % (
                 self._ngrid[0],
@@ -1030,7 +1030,7 @@ class vaspwfc(object):
         else:
             ngrid = np.array(ngrid, dtype=int)
             assert ngrid.shape == (3,)
-            assert np.alltrue(
+            assert np.all(
                 ngrid >= self._ngrid
             ), "Minium FT grid size: (%d, %d, %d)" % (
                 self._ngrid[0],

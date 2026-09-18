@@ -367,7 +367,7 @@ class unfold:
         # Deviation from the perfect sites
         gd = gvecs - np.round(gvecs)
         # match = np.linalg.norm(gd, axis=1) < epsilon
-        match = np.alltrue(np.abs(gd) < epsilon, axis=1)
+        match = np.all(np.abs(gd) < epsilon, axis=1)
 
         # return Gvecs[match], iGvecs[match]
         return Gvecs[match], Gvecs
@@ -378,7 +378,7 @@ class unfold:
         """
 
         for ii in range(self.wfc._nkpts):
-            if np.alltrue(np.abs(self.wfc._kvecs[ii] - K0) < 1e-5):
+            if np.all(np.abs(self.wfc._kvecs[ii] - K0) < 1e-5):
                 return ii + 1
         # the for-else
         else:
