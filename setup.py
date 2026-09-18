@@ -5,20 +5,19 @@ with open("./README.md", "r") as fh:
 
 setup(
     name="vaspvis",
-    version="1.3.7",
+    version="1.4.0",
     description="A highly flexible and customizable library for visualizing electronic structure data from VASP calculations",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests", "tests.*"]),
+    python_requires=">=3.9",
     install_requires=[
-        "pyprocar==5.6.6",
         "scipy",
         "pymatgen",
         "matplotlib",
         "numpy",
         "pandas",
         "ase",
-        "pychemia",
         "fastdtw",
         "scikit-learn",
     ],
