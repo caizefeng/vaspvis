@@ -125,7 +125,7 @@ st.band_plain(
     folder=band_folder,
     erange=[-4,0],
     unfold=True,
-    kpath='XGX',
+    kpath=[['X', 'G'], ['G', 'X']],
     high_symm_points=high_symm_points,
     n=50,
     M=M,

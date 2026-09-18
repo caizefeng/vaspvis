@@ -45,11 +45,13 @@ class Band:
             increases the computational time, so only use if a projected
             band structure is required.
         spin (str): Choose which spin direction to parse. ('up' or 'down')
-        kpath (str): High symmetry k-point path of band structure calculation
+        kpath (list[list] or str): High symmetry k-point path of band structure calculation
             Due to the nature of the KPOINTS file for unfolded calculations this
             information is a required input for proper labeling of the figure
             for unfolded calculations. This information is extracted from the KPOINTS
             files for non-unfolded calculations. (G is automaticall converted to \\Gamma)
+            For unfolded calculations it is given segment by segment, e.g. for the path X-G-X
+            kpath=[['X', 'G'], ['G', 'X']] (the compact form 'XGX' is also accepted).
         n (int): Number of points between each high symmetry point.
             This is also only required for unfolded calculations. This number should be
             known by the user, as it was used to generate the KPOINTS file.
@@ -86,11 +88,13 @@ class Band:
                 band structure is required.
             unfold (bool): Determines if the band structure should be unfolded or not.
             spin (str): Choose which spin direction to parse. ('up' or 'down')
-            kpath (str): High symmetry k-point path of band structure calculation
+            kpath (list[list] or str): High symmetry k-point path of band structure calculation
                 Due to the nature of the KPOINTS file for unfolded calculations this
                 information is a required input for proper labeling of the figure
                 for unfolded calculations. This information is extracted from the KPOINTS
                 files for non-unfolded calculations. (G is automatically converted to \\Gamma)
+                For unfolded calculations it is given segment by segment, e.g. for the path X-G-X
+                kpath=[['X', 'G'], ['G', 'X']] (the compact form 'XGX' is also accepted).
             n (int): Number of points between each high symmetry point.
                 This is also only required for unfolded calculations. This number should be
                 known by the user, as it was used to generate the KPOINTS file.
@@ -181,6 +185,10 @@ class Band:
         if self.hse and self.unfold:
             self.hse = False
 
+        if unfold and isinstance(kpath, str):
+            # The compact form 'XGX' is accepted as well as [['X', 'G'], ['G', 'X']]
+            labels = kpath.strip()
+            kpath = [[labels[i], labels[i + 1]] for i in range(len(labels) - 1)]
         self.kpath = kpath
         self.n = n
         self.M = M
