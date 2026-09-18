@@ -7,18 +7,43 @@ unchanged.
 """
 
 import os
+import re
 
 import numpy as np
 
 __all__ = ["parse_doscar"]
+
+# emin (F16.8) immediately followed by a five-digit NEDOS, e.g. -47.5056123530001
+_FUSED_EMIN_NEDOS = re.compile(r"^(-?\d+\.\d{8})(\d+)$")
+
+
+def _read_nedos(line):
+    """Return NEDOS from a DOSCAR block header line (``emax emin nedos efermi 1.0``).
+
+    VASP writes that line with the Fortran format ``2F16.8, I5, 2F16.8``, so a
+    NEDOS of 10000 or more fills its field completely and runs into ``emin``
+    (``-47.5056123530001`` for emin = -47.50561235 and NEDOS = 30001).  Such a
+    header is split here; pychemia's parser read the next field instead and
+    looped forever on those files.
+    """
+    fields = line.split()
+    if len(fields) >= 5:
+        nedos = int(float(fields[2]))
+    else:
+        fused = _FUSED_EMIN_NEDOS.match(fields[1]) if len(fields) == 4 else None
+        if fused is None:
+            raise ValueError(f"Cannot read the DOSCAR block header: {line!r}")
+        nedos = int(fused.group(2))
+    if nedos <= 0:
+        raise ValueError(f"Invalid NEDOS in the DOSCAR block header: {line!r}")
+    return nedos
 
 
 def _read_block(lines, start):
     """Read one DOS block whose header line (``emax emin nedos efermi 1.0``)
     is ``lines[start]``.  Returns the block as a 2D array and the index of
     the line following it."""
-    header = lines[start].split()
-    nedos = int(float(header[2]))
+    nedos = _read_nedos(lines[start])
     first, last = start + 1, start + 1 + nedos
     rows = [[float(x) for x in line.split()] for line in lines[first:last]]
     return np.array(rows), last
