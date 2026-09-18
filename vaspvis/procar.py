@@ -149,16 +149,16 @@ def parse_procar(filename):
     # Single-ion runs carry no "tot" row (and any that is present is ignored,
     # matching pyprocar); every other run has one after the ion rows.
     rows_per_block = nions + 1 if nions > 1 else 1
+    expected_headers = nkpoints * nbands * nspin
     ncols = None
-    tokens = []
-    nheaders = 0
+    data = None
     rows_per_header = None
+    nheaders = 0
     for match in _PROJECTION_BLOCK.finditer(text):
-        nheaders += 1
         if ncols is None:
             # ion index + one column per orbital + "tot"
             ncols = len(match.group("orbitals").split()) + 1
-        nrows = 0
+        rows = []
         for row in match.group("rows").splitlines():
             fields = row.split()
             if not fields:
@@ -172,22 +172,33 @@ def parse_procar(filename):
                 if nions == 1:
                     continue
                 fields[0] = "0"
-            tokens.extend(fields)
-            nrows += 1
-        if rows_per_header is None:
-            rows_per_header = nrows
-        elif nrows != rows_per_header:
+            rows.append(fields)
+        if data is None:
+            # Every block is converted as soon as it is read and stored in a
+            # preallocated array, so that the peak memory stays close to the
+            # size of the file plus the size of the result.
+            rows_per_header = len(rows)
+            data = np.empty((expected_headers, rows_per_header, ncols))
+        elif len(rows) != rows_per_header:
             raise ValueError(
-                f"Projection block {nheaders} of the PROCAR file has {nrows} "
-                f"rows, the first one has {rows_per_header}"
+                f"Projection block {nheaders + 1} of the PROCAR file has "
+                f"{len(rows)} rows, the first one has {rows_per_header}"
             )
+        if nheaders >= expected_headers:
+            raise ValueError(
+                f"Found more than {expected_headers} projection blocks in the "
+                "PROCAR file"
+            )
+        data[nheaders] = np.array(rows, dtype=float)
+        nheaders += 1
+    del text
 
-    if ncols is None:
+    if data is None:
         raise ValueError("No orbital projections found in the PROCAR file")
-    if nheaders != nkpoints * nbands * nspin:
+    if nheaders != expected_headers:
         raise ValueError(
             f"Found {nheaders} projection blocks in the PROCAR file, expected "
-            f"{nkpoints * nbands * nspin}"
+            f"{expected_headers}"
         )
     if rows_per_header == rows_per_block:
         ncomponents = 1
@@ -202,8 +213,7 @@ def parse_procar(filename):
         )
     nblocks = nheaders * ncomponents
 
-    data = np.array(tokens, dtype=float).reshape(nblocks, rows_per_block, ncols)
-    del tokens
+    data = data.reshape(nblocks, rows_per_block, ncols)
 
     if nspin == 2:
         half = nblocks // 2
