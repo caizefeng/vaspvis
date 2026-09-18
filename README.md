@@ -136,6 +136,8 @@ st.band_plain(
 
 The plots below were generated with exactly the code shown, from a band structure and a density of states
 calculation of InAs (PBE with spin-orbit coupling). `scale_factor` sets the size of the projection markers.
+The legend is drawn beside the axes but inside the figure, so the examples with a legend use a wider `figsize`;
+this keeps the axes the same size in every plot.
 
 ```python
 band_folder = 'path to the band structure calculation'
@@ -154,7 +156,7 @@ standard.band_plain(
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_plain.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_plain.png" width="480">
 
 ### s, p, d Projected Band Structure
 
@@ -164,10 +166,11 @@ from vaspvis import standard
 standard.band_spd(
     folder=band_folder,
     scale_factor=40,
+    figsize=(4.43, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_spd.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_spd.png" width="532">
 
 ### Orbital Projected Band Structure
 
@@ -178,10 +181,11 @@ standard.band_orbitals(
     folder=band_folder,
     orbitals=[0, 1, 2, 3, 4, 5, 6, 7, 8],
     scale_factor=40,
+    figsize=(4.76, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_orbital.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_orbital.png" width="571">
 
 ### Atom Projected Band Structure
 
@@ -192,10 +196,11 @@ standard.band_atoms(
     folder=band_folder,
     atoms=[0, 1],
     scale_factor=40,
+    figsize=(4.42, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_atoms.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_atoms.png" width="530">
 
 ### Atom-Orbital Projected Band Structure
 
@@ -206,10 +211,11 @@ standard.band_atom_orbitals(
     folder=band_folder,
     atom_orbital_dict={0:[1,3], 1:[1,7]},
     scale_factor=40,
+    figsize=(4.73, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_atom_orbitals.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_atom_orbitals.png" width="568">
 
 ### Atom s, p, d Projected Band Structure
 
@@ -220,10 +226,11 @@ standard.band_atom_spd(
     folder=band_folder,
     atom_spd_dict={0:'spd'},
     scale_factor=40,
+    figsize=(4.62, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_atom_spd.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_atom_spd.png" width="554">
 
 ### Element Projected Band Structure
 
@@ -234,10 +241,11 @@ standard.band_elements(
     folder=band_folder,
     elements=['In', 'As'],
     scale_factor=40,
+    figsize=(4.52, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_elements.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_elements.png" width="542">
 
 ### Element s, p, d Projected Band Structure
 
@@ -248,10 +256,11 @@ standard.band_element_spd(
     folder=band_folder,
     element_spd_dict={'As':'spd'},
     scale_factor=40,
+    figsize=(4.70, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_element_spd.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_element_spd.png" width="564">
 
 ### Element Orbital Projected Band Structure
 
@@ -262,10 +271,11 @@ standard.band_element_orbitals(
     folder=band_folder,
     element_orbital_dict={'As':[2], 'In':[3]},
     scale_factor=40,
+    figsize=(4.76, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_element_orbital.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_element_orbital.png" width="571">
 
 ## Density of States
 
@@ -280,7 +290,7 @@ standard.dos_plain(
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_plain.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_plain.png" width="480">
 
 ### s, p, d Projected Density of States
 
@@ -290,10 +300,11 @@ from vaspvis import standard
 standard.dos_spd(
     folder=dos_folder,
     energyaxis='x',
+    figsize=(4.44, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_spd.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_spd.png" width="533">
 
 ### Orbital Projected Density of States
 
@@ -304,10 +315,11 @@ standard.dos_orbitals(
     folder=dos_folder,
     orbitals=[0, 1, 2, 3, 4, 5, 6, 7, 8],
     energyaxis='x',
+    figsize=(4.77, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_orbitals.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_orbitals.png" width="572">
 
 ### Atom Projected Density of States
 
@@ -318,10 +330,11 @@ standard.dos_atoms(
     folder=dos_folder,
     atoms=[0, 1],
     energyaxis='x',
+    figsize=(4.43, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_atoms.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_atoms.png" width="532">
 
 ### Atom-Orbital Projected Density of States
 
@@ -332,10 +345,11 @@ standard.dos_atom_orbitals(
     folder=dos_folder,
     atom_orbital_dict={0:[1,3], 1:[1,7]},
     energyaxis='x',
+    figsize=(4.74, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_atom_orbitals.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_atom_orbitals.png" width="569">
 
 ### Atom s, p, d Projected Density of States
 
@@ -346,10 +360,11 @@ standard.dos_atom_spd(
     folder=dos_folder,
     atom_spd_dict={0:'spd'},
     energyaxis='x',
+    figsize=(4.63, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_atom_spd.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_atom_spd.png" width="556">
 
 ### Element Projected Density of States
 
@@ -360,10 +375,11 @@ standard.dos_elements(
     folder=dos_folder,
     elements=['In', 'As'],
     energyaxis='x',
+    figsize=(4.53, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_elements.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_elements.png" width="544">
 
 ### Element s, p, d Projected Density of States
 
@@ -374,10 +390,11 @@ standard.dos_element_spd(
     folder=dos_folder,
     element_spd_dict={'As':'spd'},
     energyaxis='x',
+    figsize=(4.71, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_element_spd.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_element_spd.png" width="565">
 
 ### Element Orbital Projected Density of States
 
@@ -388,10 +405,11 @@ standard.dos_element_orbitals(
     folder=dos_folder,
     element_orbital_dict={'As':[2], 'In':[3]},
     energyaxis='x',
+    figsize=(4.77, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_element_orbitals.png" width="600">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_element_orbitals.png" width="572">
 
 ## Band Structure / Density of States
 
@@ -406,7 +424,7 @@ standard.band_dos_plain(
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_plain.png" width="900">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_plain.png" width="720">
 
 ### s, p, d Projected Band Structure / Density of States
 
@@ -417,10 +435,11 @@ standard.band_dos_spd(
     band_folder=band_folder,
     dos_folder=dos_folder,
     scale_factor=40,
+    figsize=(6.50, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_spd.png" width="900">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_spd.png" width="780">
 
 ### Orbital Projected Band Structure / Density of States
 
@@ -432,10 +451,11 @@ standard.band_dos_orbitals(
     dos_folder=dos_folder,
     orbitals=[0, 1, 2, 3, 4, 5, 6, 7, 8],
     scale_factor=40,
+    figsize=(6.82, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_orbitals.png" width="900">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_orbitals.png" width="818">
 
 ### Atom-Orbital Projected Band Structure / Density of States
 
@@ -447,10 +467,11 @@ standard.band_dos_atom_orbitals(
     dos_folder=dos_folder,
     atom_orbital_dict={0:[1,3], 1:[1,7]},
     scale_factor=40,
+    figsize=(6.79, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_atom_orbitals.png" width="900">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_atom_orbitals.png" width="815">
 
 ### Atom Projected Band Structure / Density of States
 
@@ -462,10 +483,11 @@ standard.band_dos_atoms(
     dos_folder=dos_folder,
     atoms=[0, 1],
     scale_factor=40,
+    figsize=(6.49, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_atoms.png" width="900">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_atoms.png" width="779">
 
 ### Element Projected Band Structure / Density of States
 
@@ -477,10 +499,11 @@ standard.band_dos_elements(
     dos_folder=dos_folder,
     elements=['In', 'As'],
     scale_factor=40,
+    figsize=(6.58, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_elements.png" width="900">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_elements.png" width="790">
 
 ### Element s, p, d Projected Band Structure / Density of States
 
@@ -492,10 +515,11 @@ standard.band_dos_element_spd(
     dos_folder=dos_folder,
     element_spd_dict={'As':'spd'},
     scale_factor=40,
+    figsize=(6.77, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_element_spd.png" width="900">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_element_spd.png" width="812">
 
 ### Element Orbital Projected Band Structure / Density of States
 
@@ -507,7 +531,8 @@ standard.band_dos_element_orbitals(
     dos_folder=dos_folder,
     element_orbital_dict={'As':[2], 'In':[3]},
     scale_factor=40,
+    figsize=(6.82, 3),
 )
 ```
 
-<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_element_orbitals.png" width="900">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_element_orbitals.png" width="818">
