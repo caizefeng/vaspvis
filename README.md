@@ -2,15 +2,11 @@
 
 A highly flexible and customizable library for visualizing electronic structure data from VASP calculations.
 
-Find the full documentation [here](https://vaspvis.readthedocs.io/en/latest/modules.html) or by clicking the docs icon below.
-
-[![Documentation Status](https://readthedocs.org/projects/vaspvis/badge/?version=latest)](https://vaspvis.readthedocs.io/en/latest/?badge=latest)
-
 # Usage
 
 This package was designed to give VASP users a flexible and easy to understand method
-for generating a wide variety of band structures and density of states plots. There are
-four main modules in this package:
+for generating a wide variety of band structures and density of states plots. The main
+modules in this package are:
 
 - `Band`
 - `Dos`
@@ -30,7 +26,11 @@ onto any orbital, any atom, or any element in their structure, as well as indivi
 on any atom or element. There are also options for spin polarized band structures and density
 of states as well, letting the user make intricate plots with only a few lines of code.
 
-The `utils` module is used to generate files for band unfolding calculations.
+The `utils` module contains helper functions, for example to generate the files for band unfolding
+calculations, to build and passivate slab structures, and to determine band gaps.
+
+The package also provides the `STM` class for simulated STM images and the `Charge` class for charge
+transfer analysis.
 
 # Installation
 
@@ -49,11 +49,11 @@ https://link.aps.org/doi/10.1103/PhysRevMaterials.5.064606
 ```python
 from vaspvis import Band, Dos
 
-# Non-HSE Calculation (plain band structure)
+# Plain band structure
 bs = Band(folder='path to vasp output folder')
 
 
-# Band Calculation (projected band structure)
+# Projected band structure
 bs_projected = Band(folder='path to vasp output folder', projected=True)
 
 
@@ -69,7 +69,7 @@ that they are in the folder you load into vaspvis.
 
 # Band Unfolding
 
-Band unfolding is useful for visualizing band structures of supercells and slab structures. The method used for calculating the band unfolded structure requires an integer transformation matrix from the bulk structure. To convert the slab structure so it has an integer matrix, the `convert_slab` function can be used to generate the new slab structure and also return the transformation matrix (M). More information about the band unfolding method can be found [here](https://wiki.fysik.dtu.dk/gpaw/tutorials/unfold/unfold.html)
+Band unfolding is useful for visualizing band structures of supercells and slab structures. The method used for calculating the band unfolded structure requires an integer transformation matrix from the bulk structure. To convert the slab structure so it has an integer matrix, the `convert_slab` function can be used to generate the new slab structure and also return the transformation matrix (M). More information about the band unfolding method can be found [here](https://gpaw.readthedocs.io/tutorialsexercises/electronic/unfold/unfold.html).
 
 ```python
 from vaspvis.utils import convert_slab
@@ -137,6 +137,11 @@ st.band_plain(
 The plots below were generated with exactly the code shown, from a band structure and a density of states
 calculation of InAs (PBE with spin-orbit coupling). `scale_factor` sets the size of the projection markers.
 
+```python
+band_folder = 'path to the band structure calculation'
+dos_folder = 'path to the density of states calculation'
+```
+
 ## Band Structures
 
 ### Plain Band Structure
@@ -149,7 +154,7 @@ standard.band_plain(
 )
 ```
 
-<img src="./img/band_plain.png"  width="600" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_plain.png" width="600">
 
 ### s, p, d Projected Band Structure
 
@@ -162,7 +167,7 @@ standard.band_spd(
 )
 ```
 
-<img src="./img/band_spd.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_spd.png" width="600">
 
 ### Orbital Projected Band Structure
 
@@ -176,7 +181,7 @@ standard.band_orbitals(
 )
 ```
 
-<img src="./img/band_orbital.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_orbital.png" width="600">
 
 ### Atom Projected Band Structure
 
@@ -190,7 +195,7 @@ standard.band_atoms(
 )
 ```
 
-<img src="./img/band_atoms.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_atoms.png" width="600">
 
 ### Atom-Orbital Projected Band Structure
 
@@ -204,7 +209,7 @@ standard.band_atom_orbitals(
 )
 ```
 
-<img src="./img/band_atom_orbitals.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_atom_orbitals.png" width="600">
 
 ### Atom s, p, d Projected Band Structure
 
@@ -218,7 +223,7 @@ standard.band_atom_spd(
 )
 ```
 
-<img src="./img/band_atom_spd.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_atom_spd.png" width="600">
 
 ### Element Projected Band Structure
 
@@ -232,7 +237,7 @@ standard.band_elements(
 )
 ```
 
-<img src="./img/band_elements.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_elements.png" width="600">
 
 ### Element s, p, d Projected Band Structure
 
@@ -246,7 +251,7 @@ standard.band_element_spd(
 )
 ```
 
-<img src="./img/band_element_spd.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_element_spd.png" width="600">
 
 ### Element Orbital Projected Band Structure
 
@@ -260,7 +265,7 @@ standard.band_element_orbitals(
 )
 ```
 
-<img src="./img/band_element_orbital.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_element_orbital.png" width="600">
 
 ## Density of States
 
@@ -275,7 +280,7 @@ standard.dos_plain(
 )
 ```
 
-<img src="./img/dos_plain.png"  width="600" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_plain.png" width="600">
 
 ### s, p, d Projected Density of States
 
@@ -288,7 +293,7 @@ standard.dos_spd(
 )
 ```
 
-<img src="./img/dos_spd.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_spd.png" width="600">
 
 ### Orbital Projected Density of States
 
@@ -302,7 +307,7 @@ standard.dos_orbitals(
 )
 ```
 
-<img src="./img/dos_orbitals.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_orbitals.png" width="600">
 
 ### Atom Projected Density of States
 
@@ -316,7 +321,7 @@ standard.dos_atoms(
 )
 ```
 
-<img src="./img/dos_atoms.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_atoms.png" width="600">
 
 ### Atom-Orbital Projected Density of States
 
@@ -330,7 +335,7 @@ standard.dos_atom_orbitals(
 )
 ```
 
-<img src="./img/dos_atom_orbitals.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_atom_orbitals.png" width="600">
 
 ### Atom s, p, d Projected Density of States
 
@@ -344,7 +349,7 @@ standard.dos_atom_spd(
 )
 ```
 
-<img src="./img/dos_atom_spd.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_atom_spd.png" width="600">
 
 ### Element Projected Density of States
 
@@ -358,7 +363,7 @@ standard.dos_elements(
 )
 ```
 
-<img src="./img/dos_elements.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_elements.png" width="600">
 
 ### Element s, p, d Projected Density of States
 
@@ -372,7 +377,7 @@ standard.dos_element_spd(
 )
 ```
 
-<img src="./img/dos_element_spd.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_element_spd.png" width="600">
 
 ### Element Orbital Projected Density of States
 
@@ -386,7 +391,7 @@ standard.dos_element_orbitals(
 )
 ```
 
-<img src="./img/dos_element_orbitals.png"  width="650" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/dos_element_orbitals.png" width="600">
 
 ## Band Structure / Density of States
 
@@ -401,7 +406,7 @@ standard.band_dos_plain(
 )
 ```
 
-<img src="./img/band_dos_plain.png"  width="900" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_plain.png" width="900">
 
 ### s, p, d Projected Band Structure / Density of States
 
@@ -415,7 +420,7 @@ standard.band_dos_spd(
 )
 ```
 
-<img src="./img/band_dos_spd.png"  width="950" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_spd.png" width="900">
 
 ### Orbital Projected Band Structure / Density of States
 
@@ -430,7 +435,7 @@ standard.band_dos_orbitals(
 )
 ```
 
-<img src="./img/band_dos_orbitals.png"  width="950" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_orbitals.png" width="900">
 
 ### Atom-Orbital Projected Band Structure / Density of States
 
@@ -445,7 +450,7 @@ standard.band_dos_atom_orbitals(
 )
 ```
 
-<img src="./img/band_dos_atom_orbitals.png"  width="950" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_atom_orbitals.png" width="900">
 
 ### Atom Projected Band Structure / Density of States
 
@@ -460,7 +465,7 @@ standard.band_dos_atoms(
 )
 ```
 
-<img src="./img/band_dos_atoms.png"  width="950" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_atoms.png" width="900">
 
 ### Element Projected Band Structure / Density of States
 
@@ -475,7 +480,7 @@ standard.band_dos_elements(
 )
 ```
 
-<img src="./img/band_dos_elements.png"  width="950" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_elements.png" width="900">
 
 ### Element s, p, d Projected Band Structure / Density of States
 
@@ -490,7 +495,7 @@ standard.band_dos_element_spd(
 )
 ```
 
-<img src="./img/band_dos_element_spd.png"  width="950" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_element_spd.png" width="900">
 
 ### Element Orbital Projected Band Structure / Density of States
 
@@ -505,4 +510,4 @@ standard.band_dos_element_orbitals(
 )
 ```
 
-<img src="./img/band_dos_element_orbitals.png"  width="950" height="450">
+<img src="https://raw.githubusercontent.com/caizefeng/vaspvis/master/img/band_dos_element_orbitals.png" width="900">
