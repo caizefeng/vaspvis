@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  install-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install the package into a fresh virtual environment
+        run: |
+          python -m venv venv
+          venv/bin/pip install --upgrade pip
+          venv/bin/pip install .
+          venv/bin/pip check
+      - name: Import smoke test
+        run: venv/bin/python -c "import vaspvis.standard, vaspvis.utils, vaspvis.workflow; print('vaspvis imports fine')"
+      - name: Unit tests against the installed package
+        run: |
+          venv/bin/pip install pytest
+          venv/bin/pytest -q tests

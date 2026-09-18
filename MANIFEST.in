@@ -1,3 +1,4 @@
 include *.py
 recursive-include img *.png
 recursive-include vaspvis *.py
+recursive-include tests *.py

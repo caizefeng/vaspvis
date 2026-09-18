@@ -20,8 +20,7 @@ from ase.build import niggli_reduce, sort
 from ase.io import read, write
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.analysis.molecule_structure_comparator import CovalentRadius
-from pyprocar.utilsprocar import UtilsProcar
-from pyprocar.procarparser import ProcarParser
+from vaspvis.procar import repair_procar, parse_procar
 import matplotlib.pyplot as plt
 from fastdtw import fastdtw
 import numpy as np
@@ -207,7 +206,7 @@ class BandGap():
             spin = 3
 
         if not os.path.isfile(os.path.join(self.folder, 'PROCAR_repaired')):
-            UtilsProcar().ProcarRepair(
+            repair_procar(
                 os.path.join(self.folder, 'PROCAR'),
                 os.path.join(self.folder, 'PROCAR_repaired'),
             )
@@ -216,9 +215,8 @@ class BandGap():
             with open(os.path.join(self.folder, 'spin_projections.npy'), 'rb') as spin_projs:
                 spin_projections = np.load(spin_projs) 
         else:
-            parser = ProcarParser()
-            parser.readFile(os.path.join(self.folder, 'PROCAR_repaired'))
-            spin_projections = np.transpose(parser.spd[:,:,:,-1, -1], axes=(1,0,2))
+            spd = parse_procar(os.path.join(self.folder, 'PROCAR_repaired'))
+            spin_projections = np.transpose(spd[:,:,:,-1, -1], axes=(1,0,2))
 
             np.save(os.path.join(self.folder, 'spin_projections.npy'), spin_projections)
 

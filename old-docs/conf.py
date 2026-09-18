@@ -70,8 +70,6 @@ autodoc_mock_imports = [
     "scipy",
     "pandas",
     "ase",
-    "pychemia",
-    "pyprocar",
     "spglib",
     "fastdtw",
     "scikit-learn",

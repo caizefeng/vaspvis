@@ -5,8 +5,8 @@ from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.io.vasp.inputs import Poscar, Incar
 from pymatgen.electronic_structure.core import Spin, Orbital
 from pymatgen.core.periodic_table import Element
-from pychemia.code.vasp.doscar import VaspDoscar
-from scipy.ndimage.filters import gaussian_filter1d
+from vaspvis.doscar import parse_doscar
+from scipy.ndimage import gaussian_filter1d
 from scipy.ndimage import gaussian_filter
 from scipy.interpolate import interp2d
 from functools import reduce
@@ -79,7 +79,7 @@ class Dos:
                 if self._check_f_error():
                     self._fix_doscar()
 
-                self.doscar = VaspDoscar.parse_doscar(
+                self.doscar = parse_doscar(
                     os.path.join(folder, "DOSCAR")
                 )
                 np.save(os.path.join(folder, "dos.npy"), self.doscar["total"])
@@ -96,7 +96,7 @@ class Dos:
                     "total": dos,
                 }
             else:
-                self.doscar = VaspDoscar.parse_doscar(
+                self.doscar = parse_doscar(
                     os.path.join(folder, "DOSCAR")
                 )
                 np.save(os.path.join(folder, "dos.npy"), self.doscar["total"])

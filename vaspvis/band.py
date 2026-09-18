@@ -6,8 +6,7 @@ from pymatgen.symmetry.bandstructure import HighSymmKpath
 from pymatgen.core.periodic_table import Element
 from vaspvis.unfold import unfold, make_kpath, removeDuplicateKpoints
 from pymatgen.core.periodic_table import Element
-from pyprocar.utilsprocar import UtilsProcar
-from pyprocar.procarparser import ProcarParser
+from vaspvis.procar import repair_procar, parse_procar
 from functools import reduce
 import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge
@@ -469,7 +468,7 @@ class Band:
                 spin = 1
 
         if not os.path.isfile(os.path.join(self.folder, "PROCAR_repaired")):
-            UtilsProcar().ProcarRepair(
+            repair_procar(
                 os.path.join(self.folder, "PROCAR"),
                 os.path.join(self.folder, "PROCAR_repaired"),
             )
@@ -480,19 +479,18 @@ class Band:
             ) as projected_eigenvals:
                 projected_eigenvalues = np.load(projected_eigenvals)
         else:
-            parser = ProcarParser()
-            parser.readFile(os.path.join(self.folder, "PROCAR_repaired"))
+            spd = parse_procar(os.path.join(self.folder, "PROCAR_repaired"))
             if (
                 self.ispin
                 and not self.lsorbit
                 and np.sum(self.poscar.natoms) == 1
             ):
-                shape = int(parser.spd.shape[1] / 2)
+                shape = int(spd.shape[1] / 2)
                 projected_eigenvalues_up = np.transpose(
-                    parser.spd[:, :shape, 0, :, 1:-1], axes=(1, 0, 2, 3)
+                    spd[:, :shape, 0, :, 1:-1], axes=(1, 0, 2, 3)
                 )
                 projected_eigenvalues_down = np.transpose(
-                    parser.spd[:, shape:, 0, :, 1:-1], axes=(1, 0, 2, 3)
+                    spd[:, shape:, 0, :, 1:-1], axes=(1, 0, 2, 3)
                 )
                 projected_eigenvalues = np.concatenate(
                     [
@@ -509,12 +507,12 @@ class Band:
                 and not self.lsorbit
                 and np.sum(self.poscar.natoms) != 1
             ):
-                shape = int(parser.spd.shape[1] / 2)
+                shape = int(spd.shape[1] / 2)
                 projected_eigenvalues_up = np.transpose(
-                    parser.spd[:, :shape, 0, :-1, 1:-1], axes=(1, 0, 2, 3)
+                    spd[:, :shape, 0, :-1, 1:-1], axes=(1, 0, 2, 3)
                 )
                 projected_eigenvalues_down = np.transpose(
-                    parser.spd[:, shape:, 0, :-1, 1:-1], axes=(1, 0, 2, 3)
+                    spd[:, shape:, 0, :-1, 1:-1], axes=(1, 0, 2, 3)
                 )
                 projected_eigenvalues = np.concatenate(
                     [
@@ -529,11 +527,11 @@ class Band:
             else:
                 if np.sum(self.poscar.natoms) == 1:
                     projected_eigenvalues = np.transpose(
-                        parser.spd[:, :, :, :, 1:-1], axes=(1, 0, 2, 3, 4)
+                        spd[:, :, :, :, 1:-1], axes=(1, 0, 2, 3, 4)
                     )
                 else:
                     projected_eigenvalues = np.transpose(
-                        parser.spd[:, :, :, :-1, 1:-1], axes=(1, 0, 2, 3, 4)
+                        spd[:, :, :, :-1, 1:-1], axes=(1, 0, 2, 3, 4)
                     )
 
             np.save(
@@ -592,7 +590,7 @@ class Band:
             spin = 3
 
         if not os.path.isfile(os.path.join(self.folder, "PROCAR_repaired")):
-            UtilsProcar().ProcarRepair(
+            repair_procar(
                 os.path.join(self.folder, "PROCAR"),
                 os.path.join(self.folder, "PROCAR_repaired"),
             )
@@ -603,10 +601,9 @@ class Band:
             ) as spin_projs:
                 spin_projections = np.load(spin_projs)
         else:
-            parser = ProcarParser()
-            parser.readFile(os.path.join(self.folder, "PROCAR_repaired"))
+            spd = parse_procar(os.path.join(self.folder, "PROCAR_repaired"))
             spin_projections = np.transpose(
-                parser.spd[:, :, :, -1, -1], axes=(1, 0, 2)
+                spd[:, :, :, -1, -1], axes=(1, 0, 2)
             )
 
             np.save(

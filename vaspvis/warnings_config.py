@@ -1,9 +1,7 @@
-import warnings
+"""Package-wide warning filters.
 
-from pyvista import PyVistaDeprecationWarning
-
-warnings.filterwarnings(
-    "ignore",
-    category=PyVistaDeprecationWarning,
-    module=r"pyvista"  # Match the module where the warning ORIGINATED
-)
+Earlier releases silenced a ``PyVistaDeprecationWarning`` that pyprocar
+triggered at import time.  pyprocar (and with it pyvista) is no longer a
+dependency, so there is currently nothing to filter; the module is kept so that
+``import vaspvis.warnings_config`` keeps working.
+"""
