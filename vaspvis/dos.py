@@ -8,7 +8,7 @@ from pymatgen.core.periodic_table import Element
 from vaspvis.doscar import parse_doscar
 from scipy.ndimage import gaussian_filter1d
 from scipy.ndimage import gaussian_filter
-from scipy.interpolate import interp2d
+from scipy.interpolate import RectBivariateSpline
 from functools import reduce
 import numpy as np
 import pandas as pd
@@ -23,6 +23,32 @@ import matplotlib as mpl
 from vaspvis.dos_helpers import integrate_dos_fine
 
 mpl.rcParams.update(mpl.rcParamsDefault)
+
+
+def _interpolate_layers(atom_index, energies, densities, step=0.1):
+    """Bicubic-spline interpolation of a layer-resolved DOS onto a finer layer axis.
+
+    Parameters:
+        atom_index (sequence): Layer indices (strictly increasing).
+        energies (np.ndarray): Energy grid (strictly increasing).
+        densities (np.ndarray): DOS of shape ``(len(energies), len(atom_index))``.
+        step (float): Spacing of the interpolated layer axis.
+
+    Returns:
+        tuple: ``(atom_index, densities)`` with the interpolated layer axis
+        ``np.arange(min, max, step)`` and the DOS of shape
+        ``(len(energies), len(atom_index))``.
+
+    ``RectBivariateSpline`` (``kx = ky = 3``, ``s = 0``) drives the same FITPACK
+    routines that ``scipy.interpolate.interp2d(kind="cubic")`` used before its
+    removal in SciPy 1.14, so the values are unchanged with respect to
+    earlier releases.
+    """
+    spline = RectBivariateSpline(
+        atom_index, energies, np.transpose(densities), kx=3, ky=3, s=0
+    )
+    atom_index = np.arange(np.min(atom_index), np.max(atom_index), step)
+    return atom_index, np.transpose(spline(atom_index, energies))
 
 
 class Dos:
@@ -2308,9 +2334,9 @@ class Dos:
         if sigma_layers > 0:
             densities = gaussian_filter(densities, sigma=sigma_layers)
 
-        f = interp2d(atom_index, energies, densities, kind="cubic")
-        atom_index = np.arange(np.min(atom_index), np.max(atom_index), 0.1)
-        densities = f(atom_index, energies)
+        atom_index, densities = _interpolate_layers(
+            atom_index, energies, densities
+        )
 
         if log_scale:
             if np.min(densities) <= 0:
