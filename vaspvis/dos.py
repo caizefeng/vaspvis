@@ -165,8 +165,8 @@ class Dos:
         self.orbital_labels = {
             0: "s",
             1: "p_{y}",
-            2: "p_{x}",
-            3: "p_{z}",
+            2: "p_{z}",
+            3: "p_{x}",
             4: "d_{xy}",
             5: "d_{yz}",
             6: "d_{z^{2}}",
