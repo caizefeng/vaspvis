@@ -9,7 +9,7 @@ Find the full documentation [here](https://vaspvis.readthedocs.io/en/latest/modu
 # Usage
 
 This package was designed to give VASP users a flexible and easy to understand method
-for generating a wide variaty of band structures and density of states plots. There are
+for generating a wide variety of band structures and density of states plots. There are
 four main modules in this package:
 
 - `Band`
@@ -19,12 +19,12 @@ four main modules in this package:
 
 The `Band` and `Dos` modules allow for the highest level of flexibility because the user
 needs to pass in their own matplotlib axis, letting the user completely design the
-external appearence of their plot. The `Band` and `Dos` modules will then parse the
-VASP output data and append the it to the axis.
+external appearance of their plot. The `Band` and `Dos` modules will then parse the
+VASP output data and append it to the axis.
 
 The `standard` module uses the `Band` and `Dos` modules internally and
 was designed for those people who are not familiar with matplotlib
-or don't need to completely customize their own figure. There are a total of 48 different
+or don't need to completely customize their own figure. There are a total of 56 different
 styles of plots to choose from in this module. It gives the user the capability to project
 onto any orbital, any atom, or any element in their structure, as well as individual orbitals
 on any atom or element. There are also options for spin polarized band structures and density
@@ -61,10 +61,11 @@ bs_projected = Band(folder='path to vasp output folder', projected=True)
 dos = Dos(folder='path to vasp output folder')
 ```
 
-**Important Note:** This package parses the EIGENVAL, PROCAR, KPOINTS, POSCAR, and INCAR files, be sure that
-they are in the folder you load into vaspvis.
+**Important Note:** Band structures are parsed from the EIGENVAL, PROCAR, KPOINTS, POSCAR, INCAR, and OUTCAR files,
+and densities of states from the DOSCAR, POSCAR, INCAR, and OUTCAR files (the Fermi level is read from OUTCAR). Be sure
+that they are in the folder you load into vaspvis.
 
-**Important Note:** For spin projected orbitals you must load the spin up and spin down chanels separately using the `spin = 'up'` or `spin = 'down'` options with loading data. Default is `spin = 'up'`.
+**Important Note:** For spin projected orbitals you must load the spin up and spin down channels separately using the `spin = 'up'` or `spin = 'down'` options when loading data. Default is `spin = 'up'`.
 
 # Band Unfolding
 
@@ -133,6 +134,9 @@ st.band_plain(
 
 # Examples
 
+The plots below were generated with exactly the code shown, from a band structure and a density of states
+calculation of InAs (PBE with spin-orbit coupling). `scale_factor` sets the size of the projection markers.
+
 ## Band Structures
 
 ### Plain Band Structure
@@ -153,7 +157,8 @@ standard.band_plain(
 from vaspvis import standard
 
 standard.band_spd(
-    folder=band_folder
+    folder=band_folder,
+    scale_factor=40,
 )
 ```
 
@@ -167,6 +172,7 @@ from vaspvis import standard
 standard.band_orbitals(
     folder=band_folder,
     orbitals=[0, 1, 2, 3, 4, 5, 6, 7, 8],
+    scale_factor=40,
 )
 ```
 
@@ -180,19 +186,21 @@ from vaspvis import standard
 standard.band_atoms(
     folder=band_folder,
     atoms=[0, 1],
+    scale_factor=40,
 )
 ```
 
 <img src="./img/band_atoms.png"  width="650" height="450">
 
-### Atom-Orbtial Projected Band Structure
+### Atom-Orbital Projected Band Structure
 
 ```python
 from vaspvis import standard
 
 standard.band_atom_orbitals(
     folder=band_folder,
-    atom_orbital_dict = {0:[1,3], 1:[1,7]}
+    atom_orbital_dict={0:[1,3], 1:[1,7]},
+    scale_factor=40,
 )
 ```
 
@@ -206,6 +214,7 @@ from vaspvis import standard
 standard.band_atom_spd(
     folder=band_folder,
     atom_spd_dict={0:'spd'},
+    scale_factor=40,
 )
 ```
 
@@ -219,6 +228,7 @@ from vaspvis import standard
 standard.band_elements(
     folder=band_folder,
     elements=['In', 'As'],
+    scale_factor=40,
 )
 ```
 
@@ -232,6 +242,7 @@ from vaspvis import standard
 standard.band_element_spd(
     folder=band_folder,
     element_spd_dict={'As':'spd'},
+    scale_factor=40,
 )
 ```
 
@@ -245,12 +256,13 @@ from vaspvis import standard
 standard.band_element_orbitals(
     folder=band_folder,
     element_orbital_dict={'As':[2], 'In':[3]},
+    scale_factor=40,
 )
 ```
 
 <img src="./img/band_element_orbital.png"  width="650" height="450">
 
-## Density of Statess
+## Density of States
 
 ### Plain Density of States
 
@@ -306,14 +318,14 @@ standard.dos_atoms(
 
 <img src="./img/dos_atoms.png"  width="650" height="450">
 
-### Atom-Orbtial Projected Density of States
+### Atom-Orbital Projected Density of States
 
 ```python
 from vaspvis import standard
 
-standard.dos_atom_orbital(
+standard.dos_atom_orbitals(
     folder=dos_folder,
-    atom_orbital_pairs=[[0,1], [0,3], [1, 1], [1,7]],
+    atom_orbital_dict={0:[1,3], 1:[1,7]},
     energyaxis='x',
 )
 ```
@@ -325,9 +337,9 @@ standard.dos_atom_orbital(
 ```python
 from vaspvis import standard
 
-standard.dos_atom_orbital(
+standard.dos_atom_spd(
     folder=dos_folder,
-    atom_orbital_pairs=[[0,1], [0,3], [1, 1], [1,7]],
+    atom_spd_dict={0:'spd'},
     energyaxis='x',
 )
 ```
@@ -355,7 +367,7 @@ from vaspvis import standard
 
 standard.dos_element_spd(
     folder=dos_folder,
-    elements=['As'],
+    element_spd_dict={'As':'spd'},
     energyaxis='x',
 )
 ```
@@ -369,14 +381,14 @@ from vaspvis import standard
 
 standard.dos_element_orbitals(
     folder=dos_folder,
-    element_orbital_pairs=[['As', 2], ['In', 3]],
+    element_orbital_dict={'As':[2], 'In':[3]},
     energyaxis='x',
 )
 ```
 
 <img src="./img/dos_element_orbitals.png"  width="650" height="450">
 
-## Band Structure / Density of Statess
+## Band Structure / Density of States
 
 ### Plain Band Structure / Density of States
 
@@ -399,6 +411,7 @@ from vaspvis import standard
 standard.band_dos_spd(
     band_folder=band_folder,
     dos_folder=dos_folder,
+    scale_factor=40,
 )
 ```
 
@@ -413,20 +426,22 @@ standard.band_dos_orbitals(
     band_folder=band_folder,
     dos_folder=dos_folder,
     orbitals=[0, 1, 2, 3, 4, 5, 6, 7, 8],
+    scale_factor=40,
 )
 ```
 
 <img src="./img/band_dos_orbitals.png"  width="950" height="450">
 
-### Atom-Orbtial Projected Band Structure / Density of States
+### Atom-Orbital Projected Band Structure / Density of States
 
 ```python
 from vaspvis import standard
 
-standard.band_dos_atom_orbital(
+standard.band_dos_atom_orbitals(
     band_folder=band_folder,
     dos_folder=dos_folder,
-    atom_orbital_pairs=[[0,1], [0,3], [1, 1], [1,7]]
+    atom_orbital_dict={0:[1,3], 1:[1,7]},
+    scale_factor=40,
 )
 ```
 
@@ -441,6 +456,7 @@ standard.band_dos_atoms(
     band_folder=band_folder,
     dos_folder=dos_folder,
     atoms=[0, 1],
+    scale_factor=40,
 )
 ```
 
@@ -455,6 +471,7 @@ standard.band_dos_elements(
     band_folder=band_folder,
     dos_folder=dos_folder,
     elements=['In', 'As'],
+    scale_factor=40,
 )
 ```
 
@@ -468,7 +485,8 @@ from vaspvis import standard
 standard.band_dos_element_spd(
     band_folder=band_folder,
     dos_folder=dos_folder,
-    elements=['As'],
+    element_spd_dict={'As':'spd'},
+    scale_factor=40,
 )
 ```
 
@@ -482,7 +500,8 @@ from vaspvis import standard
 standard.band_dos_element_orbitals(
     band_folder=band_folder,
     dos_folder=dos_folder,
-    element_orbital_pairs=[['As', 2], ['In', 3]],
+    element_orbital_dict={'As':[2], 'In':[3]},
+    scale_factor=40,
 )
 ```
 
