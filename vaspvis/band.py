@@ -7,6 +7,7 @@ from pymatgen.core.periodic_table import Element
 from vaspvis.unfold import unfold, make_kpath, removeDuplicateKpoints
 from pymatgen.core.periodic_table import Element
 from vaspvis.procar import repair_procar, parse_procar
+from vaspvis.labels import format_legend_label, format_kpoint_label
 from functools import reduce
 import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge
@@ -943,7 +944,7 @@ class Band:
         num_kpts = self.kpoints_file.num_kpts
         kpts_labels = np.array(
             [
-                f"${k}$" if k != "G" else "$\\Gamma$"
+                format_kpoint_label(k)
                 for k in self.kpoints_file.labels
             ]
         )
@@ -1079,7 +1080,7 @@ class Band:
                     ).replace("$|$", "|")
                     labels.append(merged_label)
 
-        kpath = [f"${k}$" if k != "G" else "$\\Gamma$" for k in labels]
+        kpath = [format_kpoint_label(k) for k in labels]
 
         for k in kpoints_index:
             ax.axvline(
@@ -1103,10 +1104,7 @@ class Band:
             for seg in self.kpath:
                 kpath.extend(seg)
 
-        kpath = [
-            f"${k.strip()}$" if k.strip() != "G" else "$\\Gamma$"
-            for k in kpath
-        ]
+        kpath = [format_kpoint_label(k) for k in kpath]
 
         group_kpath = []
         for i, j in enumerate(kpath):
@@ -1272,7 +1270,7 @@ class Band:
                     color=color,
                 )
             )
-            legend_labels.append(f"${name}$")
+            legend_labels.append(format_legend_label(name))
 
         leg = ax.get_legend()
 

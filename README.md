@@ -137,7 +137,10 @@ st.band_plain(
 The plots below were generated with exactly the code shown, from a band structure and a density of states
 calculation of InAs (PBE with spin-orbit coupling). `scale_factor` sets the size of the projection markers.
 The legend is drawn beside the axes but inside the figure, so the examples with a legend use a wider `figsize`;
-this keeps the axes the same size in every plot.
+this keeps the axes the same size in every plot. Labels follow the IUPAC/ISO typography: element symbols, atom
+indices, high-symmetry points (Γ, X, L, ...), the Fermi-level subscript in *E* − *E*<sub>F</sub> and the unit (eV) are
+upright because they are labels or units, not quantities, while orbital letters (*s*, *p*<sub>*x*</sub>,
+*d*<sub>*xy*</sub>, ...) are italic.
 
 ```python
 band_folder = 'path to the band structure calculation'

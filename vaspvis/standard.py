@@ -5,6 +5,7 @@ projected plots.
 """
 
 import vaspvis.warnings_config
+from vaspvis.labels import ENERGY_AXIS_LABEL
 from vaspvis.band import Band
 from vaspvis.dos import Dos
 from vaspvis.utils import BandGap
@@ -16,7 +17,7 @@ import time
 
 
 def _figure_setup(ax, fontsize=6, ylim=[-6, 6]):
-    ax.set_ylabel("$E - E_{F}$ $(eV)$", fontsize=fontsize)
+    ax.set_ylabel(ENERGY_AXIS_LABEL, fontsize=fontsize)
     ax.set_ylim(ylim[0], ylim[1])
     ax.tick_params(labelsize=fontsize, length=2.5)
     ax.tick_params(axis="x", length=0)
@@ -25,13 +26,13 @@ def _figure_setup(ax, fontsize=6, ylim=[-6, 6]):
 def _figure_setup_dos(ax, fontsize=6, energyaxis="y", log_scale=False):
     ax.tick_params(labelsize=fontsize, length=2.5)
     if energyaxis == "y":
-        ax.set_ylabel("$E - E_{F}$ $(eV)$", fontsize=fontsize)
+        ax.set_ylabel(ENERGY_AXIS_LABEL, fontsize=fontsize)
         if log_scale:
             ax.set_xlabel("log(Density of States)", fontsize=fontsize)
         else:
             ax.set_xlabel("Density of States", fontsize=fontsize)
     if energyaxis == "x":
-        ax.set_xlabel("$E - E_{F}$ $(eV)$", fontsize=fontsize)
+        ax.set_xlabel(ENERGY_AXIS_LABEL, fontsize=fontsize)
         if log_scale:
             ax.set_ylabel("log(Density of States)", fontsize=fontsize)
         else:
@@ -46,7 +47,7 @@ def _figure_setup_band_dos(ax, fontsize, ylim):
     ax2.set_xlabel("Density of States", fontsize=fontsize)
     ax1.tick_params(labelsize=fontsize)
     ax1.tick_params(axis="x", length=0)
-    ax1.set_ylabel("$E - E_{F}$ $(eV)$", fontsize=fontsize)
+    ax1.set_ylabel(ENERGY_AXIS_LABEL, fontsize=fontsize)
     ax1.set_xlabel("Wave Vector", fontsize=fontsize)
     ax1.set_ylim(ylim[0], ylim[1])
 
@@ -65,7 +66,7 @@ def _figure_setup_band_dos_spin_polarized(ax, fontsize, ylim):
     )
     ax_band_up.tick_params(labelsize=fontsize)
     ax_band_up.tick_params(axis="x", length=0, labelbottom=False)
-    ax_band_up.set_ylabel("$E - E_{F}$ $(eV)$", fontsize=fontsize)
+    ax_band_up.set_ylabel(ENERGY_AXIS_LABEL, fontsize=fontsize)
     ax_band_up.set_ylim(ylim[0], ylim[1])
 
     ax_dos_down.tick_params(axis="y", length=0)
@@ -73,7 +74,7 @@ def _figure_setup_band_dos_spin_polarized(ax, fontsize, ylim):
     ax_dos_down.set_xlabel("Density of States", fontsize=fontsize)
     ax_band_down.tick_params(labelsize=fontsize)
     ax_band_down.tick_params(axis="x", length=0)
-    ax_band_down.set_ylabel("$E - E_{F}$ $(eV)$", fontsize=fontsize)
+    ax_band_down.set_ylabel(ENERGY_AXIS_LABEL, fontsize=fontsize)
     ax_band_down.set_xlabel("Wave Vector", fontsize=fontsize)
     ax_band_down.set_ylim(ylim[0], ylim[1])
 
@@ -83,10 +84,10 @@ def _figure_setup_band_dos_spin_polarized(ax, fontsize, ylim):
 def _figure_setup_layer_dos(ax, fontsize=6, energyaxis="y"):
     ax.tick_params(labelsize=fontsize)
     if energyaxis == "y":
-        ax.set_ylabel("$E - E_{F}$ $(eV)$", fontsize=fontsize)
+        ax.set_ylabel(ENERGY_AXIS_LABEL, fontsize=fontsize)
         ax.set_xlabel("Layers", fontsize=fontsize)
     if energyaxis == "x":
-        ax.set_xlabel("$E - E_{F}$ $(eV)$", fontsize=fontsize)
+        ax.set_xlabel(ENERGY_AXIS_LABEL, fontsize=fontsize)
         ax.set_ylabel("Layers", fontsize=fontsize)
 
 

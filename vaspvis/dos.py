@@ -21,6 +21,7 @@ import os
 import matplotlib as mpl
 
 from vaspvis.dos_helpers import integrate_dos_fine
+from vaspvis.labels import format_legend_label
 
 mpl.rcParams.update(mpl.rcParamsDefault)
 
@@ -1098,7 +1099,7 @@ class Dos:
                     color=color,
                 )
             )
-            legend_labels.append(f"${name}$")
+            legend_labels.append(format_legend_label(name))
 
         leg = ax.get_legend()
 
